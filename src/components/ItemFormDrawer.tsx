@@ -4,8 +4,10 @@ import { SlideDrawer } from "react-slide-drawer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setShowItemFormDrawer } from "@/store/features/ui/uiSlice";
 import { Input, type InputChangeEvent } from "@/components/ui/Input";
-import { createItem } from "@/store/features/items/itemsThunk";
+import { createItem, updateItem } from "@/store/features/items/itemsThunk";
 import CategorySelect from "./CategorySelect";
+import useDimensions from "@/hooks/useDimensions";
+import { addToast } from "@/lib/Toaster";
 
 interface Props {
     item: Item | null;
@@ -40,6 +42,7 @@ const toFormData = (item: Item): ItemFormData => ({
 const ItemFormDrawer = ({ item }: Props) => {
     const isEditMode = !!item;
 
+    const { width: screenWidth } = useDimensions();
     const dispatch = useAppDispatch();
     const { showItemFormDrawer } = useAppSelector((state) => state.ui);
 
@@ -115,19 +118,25 @@ const ItemFormDrawer = ({ item }: Props) => {
         try {
             setIsSubmitting(true);
 
-            console.log("Form submitted with data:", formData);
-
             if (isEditMode && item) {
-                // TODO: await dispatch(updateItem({ id: item.id, payload: formData })).unwrap();
+                await dispatch(updateItem({ id: item.id, payload: formData })).unwrap();
             } else {
                 await dispatch(createItem(formData)).unwrap();
             }
 
-            // clearForm();
-            // handleClose();
+            addToast({
+                message: isEditMode ? "Item updated!" : "Item added!",
+                status: "success"
+            });
+
+            clearForm();
+            handleClose();
         } catch (error: unknown) {
-            // TODO: surface error via toast once available in this app
-            console.error(error);
+            const errorMessage = typeof error === "string" ? error : "Server error!";
+            addToast({
+                message: errorMessage,
+                status: "error"
+            });
         } finally {
             setIsErrorCheckable(false);
             setIsSubmitting(false);
@@ -138,7 +147,7 @@ const ItemFormDrawer = ({ item }: Props) => {
         <SlideDrawer
             show={showItemFormDrawer}
             onClose={handleClose}
-            width={400}
+            width={screenWidth <= 400 ? "100%" : 400}
             animate={true}
             position="right"
             zIndex={42}

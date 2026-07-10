@@ -16,3 +16,11 @@ type Item = {
     updatedAt: string;
     updatedBy: MiniUser | null;
 };
+
+type ItemComputed = {
+    costMMK: number;
+    profit: number;
+    stockCount: number;
+    isInStock: boolean;
+    isLow: boolean;
+};

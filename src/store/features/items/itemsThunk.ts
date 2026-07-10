@@ -4,7 +4,7 @@ import { extractErrorMessage } from "@/utils/extractErrorMessage";
 
 export const fetchItems = createAsyncThunk<
     PaginatedResponse<Item>,
-    PaginatedPayload<ItemFilters>,
+    PaginatedPayload<ItemListFilters>,
     { rejectValue: string }
 >("items/fetchAll", async (payload, { rejectWithValue, signal }) => {
     try {
@@ -24,3 +24,15 @@ export const createItem = createAsyncThunk<Item, CreateItemPayload, { rejectValu
         }
     }
 );
+
+export const updateItem = createAsyncThunk<
+    Item,
+    { id: number; payload: UpdateItemPayload },
+    { rejectValue: string }
+>("items/update", async ({ id, payload }, { rejectWithValue }) => {
+    try {
+        return await itemsApi.update(id, payload);
+    } catch (error) {
+        return rejectWithValue(extractErrorMessage(error));
+    }
+});

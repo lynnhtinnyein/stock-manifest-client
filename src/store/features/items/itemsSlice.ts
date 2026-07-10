@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { fetchItems } from "./itemsThunk";
+import { createItem, fetchItems, updateItem } from "./itemsThunk";
 
 const initialState: PaginatedState<Item> = {
     items: [],
@@ -46,9 +46,20 @@ const itemsSlice = createSlice({
                 if (isCancelled) {
                     return;
                 }
-
                 state.loading = false;
                 state.error = action.payload || "Failed to fetch stockItems";
+            })
+
+            .addCase(createItem.fulfilled, (state, action) => {
+                state.items.unshift(action.payload);
+                state.totalElements += 1;
+            })
+            .addCase(updateItem.fulfilled, (state, action) => {
+                const updatedItem = action.payload;
+                const index = state.items.findIndex((item) => item.id === updatedItem.id);
+                if (index !== -1) {
+                    state.items[index] = updatedItem;
+                }
             });
     }
 });

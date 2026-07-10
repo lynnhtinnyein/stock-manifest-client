@@ -2,7 +2,7 @@ import httpClient from "@/lib/api-clients/httpClient";
 
 export const itemsApi = {
     fetchAll: async (
-        { pagination, sorting, filters }: PaginatedPayload<ItemFilters>,
+        { pagination, sorting, filters }: PaginatedPayload<ItemListFilters>,
         signal?: AbortSignal
     ): Promise<PaginatedResponse<Item>> => {
         const { page = 1, perPage = 10 } = pagination || {};
@@ -31,7 +31,7 @@ export const itemsApi = {
 
         const cleanedFilters = cleanFilters(filters || {});
 
-        const res = await httpClient.get<PaginatedResponse<Item>>("/items/stocks", {
+        const res = await httpClient.get<PaginatedResponse<Item>>("/items", {
             params: {
                 page,
                 perPage,
@@ -47,6 +47,11 @@ export const itemsApi = {
 
     create: async (payload: CreateItemPayload): Promise<Item> => {
         const res = await httpClient.post("/items", payload);
+        return res.data;
+    },
+
+    update: async (id: number, payload: UpdateItemPayload): Promise<Item> => {
+        const res = await httpClient.put(`/items/${id}`, payload);
         return res.data;
     }
 };

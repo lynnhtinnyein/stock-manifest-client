@@ -1,8 +1,8 @@
 import { useAppSelector } from "@/store/hooks";
 
 interface Props {
-    selectedCategoryId: number | "all";
-    onChange: (value: number | "all") => void;
+    selectedCategoryId: number | null;
+    onChange: (value: number | null) => void;
 }
 
 const CategoryFilters = ({ selectedCategoryId, onChange }: Props) => {
@@ -28,8 +28,8 @@ const CategoryFilters = ({ selectedCategoryId, onChange }: Props) => {
     return (
         <div className="flex items-center gap-2 flex-wrap">
             <button
-                onClick={() => onChange("all")}
-                className={`${base} ${selectedCategoryId === "all" ? "bg-ink text-paper" : "bg-white"}`}
+                onClick={() => onChange(null)}
+                className={`${base} ${selectedCategoryId === null ? "bg-ink text-paper" : "bg-white"}`}
             >
                 All Items
             </button>

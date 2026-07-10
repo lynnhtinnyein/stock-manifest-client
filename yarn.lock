@@ -1567,10 +1567,10 @@ react-router@7.18.1:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
 
-react-slide-drawer@^1.1.7:
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/react-slide-drawer/-/react-slide-drawer-1.1.7.tgz#d9ab33995903949a52c01aab5b992e0f779d7a6e"
-  integrity sha512-afHI7uK8b7MOLpdXh7KQp8IrMxQshTj8iGWP5uaV711K++JB0L4FoZVPtE27++GWYeyDtozyCGhxgfczRhE8hA==
+react-slide-drawer@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/react-slide-drawer/-/react-slide-drawer-1.1.8.tgz#2436275699fc2c2ba9f374721c367596a9271272"
+  integrity sha512-60OAy7ItDIsGJUA5BqQKgeC3WpZZxsP+LtjBWJNvYccm5saDtRlQPOrqDTJCSs3R/q6Tv/SYRjAN3uNJ7HsdZA==
   dependencies:
     "@emotion/is-prop-valid" "^1.3.1"
 
