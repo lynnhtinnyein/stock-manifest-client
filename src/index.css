@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+:root {
+    --font-space-grotesk: "Space Grotesk", sans-serif;
+    --font-inter: "Inter", sans-serif;
+    --font-plex-mono: "IBM Plex Mono", monospace;
+}
+
+@theme {
+    --font-display: var(--font-space-grotesk);
+    --font-body: var(--font-inter);
+    --font-mono: var(--font-plex-mono);
+
+    --color-ink: #1b2430;
+    --color-paper: #f5f5f1;
+    --color-paper-line: #e4e3dc;
+    --color-stamp-amber: #d08a72;
+    --color-manifest-blue: #3a5a78;
+    --color-ok-green: #3f8f5f;
+    --color-alert-red: #c1443c;
+    --color-muted: #8a93a0;
+
+    --font-display: var(--font-space-grotesk), sans-serif;
+    --font-body: var(--font-inter), sans-serif;
+    --font-mono: var(--font-plex-mono), monospace;
+}
+
+.ledger-row {
+    border-bottom: 1px dashed var(--color-paper-line);
+}
+.ledger-row:hover {
+    background: #ffffff;
+}
+
+.stamp {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transform: rotate(-3deg);
+    border: 1.5px solid currentColor;
+    position: relative;
+}
+.stamp::before {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 1px solid currentColor;
+    border-radius: 1px;
+    opacity: 0.5;
+}
+.stamp-in {
+    color: var(--color-ok-green);
+    background: #3f8f5f0d;
+}
+.stamp-low {
+    color: var(--color-stamp-amber);
+    background: #c9862b0d;
+}
+.stamp-out {
+    color: var(--color-alert-red);
+    background: #c1443c0d;
+}
+
+.parcel-card {
+    background: #ffffff;
+    border: 1px solid var(--color-paper-line);
+    position: relative;
+    border-radius: 4px;
+}
+.parcel-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-image: radial-gradient(circle 3px, var(--color-paper) 3px, transparent 3px);
+    background-size: 14px 10px;
+    background-position: 6px -5px;
+    background-repeat: repeat-x;
+}
+
+.avatar-swatch {
+    font-family: var(--font-display);
+    font-weight: 700;
+}
+
+.brand-mark {
+    position: relative;
+    display: inline-block;
+}
+.brand-mark::after {
+    content: "";
+    position: absolute;
+    left: -2px;
+    right: -4px;
+    bottom: 2px;
+    height: 8px;
+    background: var(--color-stamp-amber);
+    opacity: 0.25;
+    z-index: -1;
+    transform: rotate(-1deg);
+}
+
+.sort-th {
+    cursor: pointer;
+    user-select: none;
+}
+.sort-arrow {
+    display: inline-flex;
+    opacity: 0;
+    transition:
+        opacity 0.15s ease,
+        transform 0.15s ease;
+    transform: translateY(1px);
+    font-size: 9px;
+}
+.sort-th:hover .sort-arrow {
+    opacity: 0.45;
+}
+.sort-th.sort-active .sort-arrow {
+    opacity: 1;
+}
+.sort-th.sort-desc .sort-arrow {
+    transform: translateY(1px) rotate(180deg);
+}
+
+.rate-box input[type="number"]::-webkit-outer-spin-button,
+.rate-box input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.rate-box input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+::-webkit-scrollbar {
+    height: 8px;
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--color-paper-line);
+    border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sort-arrow {
+        transition: none;
+    }
+}
+
+button {
+    cursor: pointer;
+}
