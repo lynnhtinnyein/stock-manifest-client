@@ -28,3 +28,13 @@ type ResponseError = {
     message: string;
     errors: string[];
 };
+
+interface PaginatedReduxState<T> {
+    items: T[];
+    loading: boolean;
+    error: string | null;
+    page: number;
+    totalPages: number;
+    totalElements: number;
+    hasMore: boolean;
+}
