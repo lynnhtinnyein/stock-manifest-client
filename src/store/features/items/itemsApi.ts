@@ -53,5 +53,18 @@ export const itemsApi = {
     update: async (id: number, payload: UpdateItemPayload): Promise<Item> => {
         const res = await httpClient.put(`/items/${id}`, payload);
         return res.data;
+    },
+
+    delete: async (id: number): Promise<void> => {
+        await httpClient.delete(`/items/${id}`);
+    },
+
+    syncImage: async (id: number, payload: FormData): Promise<Item> => {
+        const res = await httpClient.post(`/items/${id}/image`, payload, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return res.data;
     }
 };

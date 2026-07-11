@@ -1,22 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface UIState {
-    showItemFormDrawer: boolean;
+    isSettingMode: boolean;
 }
 
 const initialState: UIState = {
-    showItemFormDrawer: false
+    isSettingMode: false
 };
 
 const uiSlice = createSlice({
     name: "ui",
     initialState,
     reducers: {
-        setShowItemFormDrawer(state, action: { payload: boolean }) {
-            state.showItemFormDrawer = action.payload;
+        setIsSettingMode(state, action: { payload: boolean }) {
+            state.isSettingMode = action.payload;
         }
     }
 });
 
-export const { setShowItemFormDrawer } = uiSlice.actions;
+export const { setIsSettingMode } = uiSlice.actions;
 export default uiSlice.reducer;

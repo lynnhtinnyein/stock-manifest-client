@@ -9,4 +9,5 @@ type ItemFormData = {
     stockIn: string;
     stockOut: string;
     remark: string;
+    image: Attachment | null;
 };

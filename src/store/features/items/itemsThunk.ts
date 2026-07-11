@@ -36,3 +36,26 @@ export const updateItem = createAsyncThunk<
         return rejectWithValue(extractErrorMessage(error));
     }
 });
+
+export const deleteItem = createAsyncThunk<void, number, { rejectValue: string }>(
+    "items/delete",
+    async (id, { rejectWithValue }) => {
+        try {
+            await itemsApi.delete(id);
+        } catch (error) {
+            return rejectWithValue(extractErrorMessage(error));
+        }
+    }
+);
+
+export const syncImage = createAsyncThunk<
+    Item,
+    { id: number; payload: FormData },
+    { rejectValue: string }
+>("items/syncImage", async ({ id, payload }, { rejectWithValue }) => {
+    try {
+        return await itemsApi.syncImage(id, payload);
+    } catch (error) {
+        return rejectWithValue(extractErrorMessage(error));
+    }
+});

@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { extractErrorMessage } from "@/utils/extractErrorMessage";
 import { settingsApi } from "./settingsApi";
 
-export const fetchSettings = createAsyncThunk<Setting[], void, { rejectValue: string }>(
+export const fetchSettings = createAsyncThunk<Settings, void, { rejectValue: string }>(
     "settings/fetch",
     async (_, { rejectWithValue }) => {
         try {
@@ -14,7 +14,7 @@ export const fetchSettings = createAsyncThunk<Setting[], void, { rejectValue: st
 );
 
 export const updateSettings = createAsyncThunk<
-    Setting[],
+    Settings,
     UpdateSettingsPayload,
     { rejectValue: string }
 >("settings/update", async (payload, { rejectWithValue }) => {

@@ -19,8 +19,8 @@ const settingsSlice = createSlice({
             .addCase(fetchSettings.pending, (state) => {
                 state.exchangeRate = "";
             })
-            .addCase(fetchSettings.fulfilled, (state, action: PayloadAction<Setting[]>) => {
-                state.exchangeRate = action.payload[0]?.exchangeRate || "";
+            .addCase(fetchSettings.fulfilled, (state, action: PayloadAction<Settings>) => {
+                state.exchangeRate = action.payload.exchangeRate || "";
             })
             .addCase(fetchSettings.rejected, (state) => {
                 state.exchangeRate = "";
@@ -30,8 +30,8 @@ const settingsSlice = createSlice({
             .addCase(updateSettings.pending, (state) => {
                 state.exchangeRate = "";
             })
-            .addCase(updateSettings.fulfilled, (state, action: PayloadAction<Setting[]>) => {
-                state.exchangeRate = action.payload[0]?.exchangeRate || "";
+            .addCase(updateSettings.fulfilled, (state, action: PayloadAction<Settings>) => {
+                state.exchangeRate = action.payload.exchangeRate || "";
             })
             .addCase(updateSettings.rejected, (state) => {
                 state.exchangeRate = "";

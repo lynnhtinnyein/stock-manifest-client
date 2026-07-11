@@ -1,12 +1,12 @@
-import { setShowItemFormDrawer } from "@/store/features/ui/uiSlice";
+import { Plus, LogOut } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
-import { Plus } from "lucide-react";
 
-const Header = () => {
+interface Props {
+    onAdd?: () => void;
+}
+
+const Header = ({ onAdd }: Props) => {
     const dispatch = useAppDispatch();
-    const handleAdd = () => {
-        dispatch(setShowItemFormDrawer(true));
-    };
 
     return (
         <header className="border-b border-paper-line bg-paper sticky top-0 z-20">
@@ -14,7 +14,7 @@ const Header = () => {
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                     <div>
                         <p className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase mb-1">
-                            ONLINE SALE · BANGKOK DEPOT
+                            ONLINE SALES · BANGKOK DEPOT
                         </p>
                         <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
                             <span className="brand-mark">I want it, I got it</span>
@@ -23,13 +23,21 @@ const Header = () => {
                             STOCK MANIFEST
                         </p>
                     </div>
-                    <button
-                        onClick={handleAdd}
-                        className="cursor-pointer font-display text-sm font-semibold bg-ink text-paper px-4 py-2.5 rounded-xs hover:opacity-90 transition flex items-center gap-1.5"
-                    >
-                        <Plus size={9} strokeWidth={4} />
-                        Log New Item
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={onAdd}
+                            className="cursor-pointer font-display text-sm font-semibold bg-ink text-paper px-4 py-2.5 rounded-xs hover:opacity-90 transition flex items-center gap-1.5"
+                        >
+                            <Plus size={9} strokeWidth={4} />
+                            Add New Item
+                        </button>
+                        <button
+                            onClick={() => dispatch({ type: "auth/logout" })}
+                            className="cursor-pointer font-display text-sm font-semibold border border-paper-line text-muted px-3 py-2.5 rounded-xs hover:text-ink hover:border-ink/30 transition flex items-center gap-1.5"
+                        >
+                            <LogOut size={14} />
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>

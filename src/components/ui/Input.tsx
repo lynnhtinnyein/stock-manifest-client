@@ -108,7 +108,7 @@ export const Input = ({
                     onChange={isNumeric ? handleNumericChange : onChange}
                     placeholder={placeholder}
                     disabled={isDisabled}
-                    className={`${fieldClass(isInvalid, isDisabled)}${isNumeric ? " font-mono" : ""}`}
+                    className={`disabled:bg-paper disabled:text-muted ${fieldClass(isInvalid, isDisabled)}${isNumeric ? " font-mono" : ""}`}
                 />
             )}
 

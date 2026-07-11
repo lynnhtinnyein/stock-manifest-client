@@ -1,4 +1,4 @@
-type Setting = {
+type Settings = {
     id: number;
     exchangeRate: string;
     updatedAt: string;

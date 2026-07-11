@@ -10,7 +10,7 @@ type Item = {
     stockIn: number;
     stockOut: number;
     remark: string | null;
-    image: string | null;
+    image: UploadedAttachment | null;
     createdAt: string;
     createdBy: MiniUser | null;
     updatedAt: string;
@@ -18,6 +18,7 @@ type Item = {
 };
 
 type ItemComputed = {
+    priceInMmk: number;
     costMMK: number;
     profit: number;
     stockCount: number;

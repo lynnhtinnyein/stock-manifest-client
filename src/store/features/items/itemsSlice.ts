@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { createItem, fetchItems, updateItem } from "./itemsThunk";
+import { createItem, deleteItem, fetchItems, updateItem } from "./itemsThunk";
 
 const initialState: PaginatedState<Item> = {
     items: [],
@@ -60,6 +60,11 @@ const itemsSlice = createSlice({
                 if (index !== -1) {
                     state.items[index] = updatedItem;
                 }
+            })
+            .addCase(deleteItem.fulfilled, (state, action) => {
+                const deletedItemId = action.meta.arg;
+                state.items = state.items.filter((item) => item.id !== deletedItemId);
+                state.totalElements -= 1;
             });
     }
 });
