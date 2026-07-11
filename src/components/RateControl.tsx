@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import { updateSettings } from "@/store/features/settings/settingsThunk";
+import { addToast } from "@/lib/Toaster";
 
 interface RateControlProps {
     exchangeRate: string;
@@ -47,6 +48,7 @@ const RateControl = ({ exchangeRate }: RateControlProps) => {
         try {
             await dispatch(updateSettings({ exchangeRate: value })).unwrap();
             setConfirmed(true);
+            addToast({ message: "Exchange rate updated.", status: "success" });
         } finally {
             setSubmitting(false);
         }

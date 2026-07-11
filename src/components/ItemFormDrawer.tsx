@@ -12,6 +12,7 @@ import { generateId } from "@/utils/generateId";
 import CategorySelect from "./CategorySelect";
 import useDimensions from "@/hooks/useDimensions";
 import useFileValidation from "@/hooks/useFileValidation";
+import ProtectedImage from "./ui/ProtectedImage";
 
 interface Props {
     show: boolean;
@@ -45,7 +46,7 @@ const toFormData = (item: Item): ItemFormData => ({
     stockIn: item.stockIn?.toString() ?? "",
     stockOut: item.stockOut?.toString() ?? "",
     remark: item.remark ?? "",
-    image: null
+    image: item?.image ? parseToLocalAttachment(item.image) : null
 });
 
 const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
@@ -55,10 +56,7 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
     const dispatch = useAppDispatch();
     const { validateFile } = useFileValidation();
 
-    const [formData, setFormData] = useState<ItemFormData>({
-        ...emptyForm,
-        image: item?.image ? parseToLocalAttachment(item.image) : null
-    });
+    const [formData, setFormData] = useState<ItemFormData>(emptyForm);
     const [isErrorCheckable, setIsErrorCheckable] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -245,11 +243,11 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
                 <form onSubmit={handleSubmit} className="p-5 space-y-4">
                     <div className="flex flex-col space-y-1.5">
                         <span className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
-                            Item Image
+                            Image
                         </span>
                         {imagePreviewUrl ? (
                             <div className="relative w-24 h-24 rounded-xs overflow-hidden border border-paper-line">
-                                <img
+                                <ProtectedImage
                                     src={imagePreviewUrl}
                                     alt={formData.image?.name}
                                     className="w-full h-full object-cover"
@@ -278,7 +276,7 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
                     </div>
 
                     <Input
-                        label="Item Name"
+                        label="Name"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
@@ -294,6 +292,7 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
                         name="weightInGrams"
                         type="number"
                         min={0}
+                        placeholder="1 kg = 1000 grams"
                         value={formData.weightInGrams}
                         onChange={handleInputChange}
                     />

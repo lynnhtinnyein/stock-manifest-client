@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { createItem, deleteItem, fetchItems, updateItem } from "./itemsThunk";
+import { createItem, deleteItem, fetchItems, syncImage, updateItem } from "./itemsThunk";
 
 const initialState: PaginatedState<Item> = {
     items: [],
@@ -65,6 +65,14 @@ const itemsSlice = createSlice({
                 const deletedItemId = action.meta.arg;
                 state.items = state.items.filter((item) => item.id !== deletedItemId);
                 state.totalElements -= 1;
+            })
+
+            .addCase(syncImage.fulfilled, (state, action) => {
+                const updatedItem = action.payload;
+                const index = state.items.findIndex((item) => item.id === updatedItem.id);
+                if (index !== -1) {
+                    state.items[index] = updatedItem;
+                }
             });
     }
 });

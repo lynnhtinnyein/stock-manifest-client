@@ -2,6 +2,7 @@ import { useMemo, useState, type ChangeEvent, type SubmitEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login } from "@/store/features/auth/authThunk";
 import PasswordVisibilityToggle from "@/components/ui/PasswordVisibilityToggle";
+import { APP_VERSION } from "@/configs/env";
 
 // Manifest palette — matches the stock-manifest dashboard's design tokens.
 const ink = "#1B2430";
@@ -100,7 +101,7 @@ const LoginPage = () => {
 
                 {/* LEFT: identity panel */}
                 <div
-                    className="relative overflow-hidden flex flex-col p-8 sm:p-10 order-1 min-h-[280px] md:min-h-0"
+                    className="relative overflow-hidden flex flex-row md:flex-col items-center md:items-stretch justify-between md:justify-start gap-4 p-5 sm:p-6 md:p-10 order-1 min-h-0 md:min-h-0"
                     style={{ backgroundColor: ink, color: paper }}
                 >
                     <div
@@ -111,27 +112,25 @@ const LoginPage = () => {
                         }}
                     />
 
-                    <div className="relative z-[1]">
+                    <div className="relative z-[1] hidden md:block">
                         <p
                             className="font-['IBM_Plex_Mono',monospace] text-[10px] tracking-[0.16em] uppercase"
                             style={{ color: "rgba(245,245,241,0.55)" }}
                         >
-                            ONLINE SALE · BANGKOK DEPOT
+                            STOCK MANIFEST
                         </p>
                     </div>
 
-                    {/* logo, vertically centered in the panel */}
-                    <div className="relative z-[1] flex-1 flex items-center justify-center py-6">
+                    {/* logo — small + inline on mobile, big + centered on desktop */}
+                    <div className="relative z-[1] flex-1 flex items-center justify-center md:py-6">
                         <img
-                            src="/assets/logos/logo.png"
-                            width={400}
-                            height={400}
+                            src="/assets/logos/logo-long.png"
                             alt="Logo"
-                            className="scale-110"
+                            className="w-auto h-24 md:w-auto md:h-auto md:scale-105"
                         />
                     </div>
 
-                    <div className="relative z-[1]">
+                    <div className="relative z-[1] hidden md:block">
                         <div
                             className="h-px mb-4"
                             style={{ backgroundColor: "rgba(245,245,241,0.15)" }}
@@ -140,7 +139,7 @@ const LoginPage = () => {
                             className="font-['IBM_Plex_Mono',monospace] text-[10px] tracking-[0.16em] uppercase"
                             style={{ color: "rgba(245,245,241,0.55)" }}
                         >
-                            STOCK MANIFEST CLIENT
+                            ONLINE SALE · BANGKOK DEPOT
                         </p>
                     </div>
                 </div>
@@ -365,7 +364,7 @@ const LoginPage = () => {
                             className="font-['IBM_Plex_Mono',monospace] text-[10px] tracking-[0.1em]"
                             style={{ color: muted }}
                         >
-                            v1.0.0
+                            v{APP_VERSION}
                         </span>
                         <span className="text-[11px]" style={{ color: muted }}>
                             Copyright &copy; {new Date().getFullYear()} All Rights Reserved

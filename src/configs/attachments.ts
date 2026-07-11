@@ -26,6 +26,6 @@ export const ALLOWED_DOCUMENT_TYPES = [
 
 export const ALLOWED_FILE_TYPES = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_DOCUMENT_TYPES];
 
-export const MAX_FILE_SIZE_MB = 5; //MB
+export const MAX_FILE_SIZE_MB = 10; //MB
 export const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024; // in bytes
 export const MAX_FILE_COUNT = 5;

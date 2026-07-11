@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Plus, Trash2, Check } from "lucide-react";
 import { COLOR_PRESETS } from "@/lib/colors";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { createCategory, deleteCategory } from "@/store/features/categories/categoriesThunk";
 
 interface CategorySelectProps {
     value: number | null;
@@ -9,6 +10,7 @@ interface CategorySelectProps {
 }
 
 export default function CategorySelect({ value, onChange }: CategorySelectProps) {
+    const dispatch = useAppDispatch();
     const { items: categories } = useAppSelector((state) => state.categories);
 
     const [open, setOpen] = useState(false);
@@ -30,14 +32,27 @@ export default function CategorySelect({ value, onChange }: CategorySelectProps)
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
 
-    function submitNewCategory() {
+    const submitNewCategory = () => {
         const trimmed = newName.trim();
         if (!trimmed) return;
-        // onAddCategory(trimmed, newColor);
+        dispatch(createCategory({ name: trimmed, color: newColor }));
         setNewName("");
         setNewColor(COLOR_PRESETS[0]);
         setIsAdding(false);
-    }
+    };
+
+    const handleDeleteCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (
+            !confirm(
+                "Are you sure you want to delete this category? It may affect existing items that are assigned to this category."
+            )
+        )
+            return;
+        e.stopPropagation();
+        e.preventDefault();
+        const id = parseInt(e.currentTarget.name);
+        dispatch(deleteCategory(id));
+    };
 
     return (
         <div className="relative" ref={wrapRef}>
@@ -95,10 +110,8 @@ export default function CategorySelect({ value, onChange }: CategorySelectProps)
                                 </button>
                                 <button
                                     type="button"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        // onDeleteCategory(c.id);
-                                    }}
+                                    name={c.id.toString()}
+                                    onClick={handleDeleteCategory}
                                     aria-label={`Delete ${c.name}`}
                                     className="opacity-0 group-hover:opacity-100 text-muted hover:text-alert-red transition"
                                 >

@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { getComputed } from "@/lib/computed";
 import { fmt } from "@/lib/format";
 import StatusStamp from "./StatusStamp";
 import { Pencil, Trash2 } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { deleteItem } from "@/store/features/items/itemsThunk";
+import ProtectedImage from "./ui/ProtectedImage";
 
 interface Props {
     items: Item[];
@@ -11,6 +13,12 @@ interface Props {
     sorting: Sorting;
     onSort: (key: Sorting) => void;
     onEdit: (item: Item) => void;
+}
+
+interface PreviewState {
+    src: string;
+    x: number;
+    y: number;
 }
 
 const COLUMNS: { key: ItemSortBy | null; label: string; align: "left" | "right" | "center" }[] = [
@@ -29,13 +37,42 @@ const COLUMNS: { key: ItemSortBy | null; label: string; align: "left" | "right" 
     { key: "stockStatus", label: "Status", align: "center" }
 ];
 
+const PREVIEW_SIZE = 256;
+const PREVIEW_OFFSET = 20;
+
 const ItemTable = ({ items, exchangeRate, sorting, onSort, onEdit }: Props) => {
     const dispatch = useAppDispatch();
+    const [preview, setPreview] = useState<PreviewState | null>(null);
+
     const handleDelete = (id: number) => {
         if (confirm("Are you sure you want to delete this item?")) {
             dispatch(deleteItem(id));
         }
     };
+
+    const clampPosition = (clientX: number, clientY: number) => {
+        const maxX = window.innerWidth - PREVIEW_SIZE - PREVIEW_OFFSET;
+        const maxY = window.innerHeight - PREVIEW_SIZE - PREVIEW_OFFSET;
+        return {
+            x: Math.min(clientX + PREVIEW_OFFSET, maxX),
+            y: Math.min(clientY + PREVIEW_OFFSET, maxY)
+        };
+    };
+
+    const showPreview = (e: React.MouseEvent, src: string) => {
+        const { x, y } = clampPosition(e.clientX, e.clientY);
+        setPreview({ src, x, y });
+    };
+
+    const movePreview = (e: React.MouseEvent) => {
+        setPreview((prev) => {
+            if (!prev) return prev;
+            const { x, y } = clampPosition(e.clientX, e.clientY);
+            return { ...prev, x, y };
+        });
+    };
+
+    const hidePreview = () => setPreview(null);
 
     return (
         <div className="bg-white border border-paper-line rounded-xs overflow-x-auto">
@@ -103,6 +140,7 @@ const ItemTable = ({ items, exchangeRate, sorting, onSort, onEdit }: Props) => {
                             item,
                             exchangeRate
                         );
+                        const imageSrc = item?.image?.url || "/assets/images/placeholder.png";
                         return (
                             <tr key={item.id} className="ledger-row">
                                 <td className="py-3 pl-4 pr-3 font-mono text-xs text-muted">
@@ -110,10 +148,15 @@ const ItemTable = ({ items, exchangeRate, sorting, onSort, onEdit }: Props) => {
                                 </td>
                                 <td className="py-3 px-3 w-[320px]">
                                     <div className="flex items-center gap-3">
-                                        <img
-                                            src={item?.image || "/assets/images/placeholder.png"}
+                                        <ProtectedImage
+                                            src={imageSrc}
                                             alt={item.name}
-                                            className="w-16 h-16 object-cover rounded-xs"
+                                            className="w-16 h-16 object-cover rounded-xs cursor-zoom-in"
+                                            onMouseEnter={(e: React.MouseEvent<HTMLImageElement>) =>
+                                                showPreview(e, imageSrc)
+                                            }
+                                            onMouseMove={movePreview}
+                                            onMouseLeave={hidePreview}
                                         />
                                     </div>
                                 </td>
@@ -123,35 +166,35 @@ const ItemTable = ({ items, exchangeRate, sorting, onSort, onEdit }: Props) => {
                                 <td className="py-3 px-3">
                                     <span
                                         className="text-xs font-medium"
-                                        style={{ color: item.category.color ?? undefined }}
+                                        style={{ color: item?.category?.color ?? "#8a93a0" }}
                                     >
-                                        {item.category.name}
+                                        {item?.category?.name || "N/A"}
                                     </span>
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs">
-                                    {fmt(Number(item.priceInThb))}
+                                    {fmt(Number(item.priceInThb))} THB
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs">
-                                    {fmt(priceInMmk)}
+                                    {fmt(priceInMmk)} MMK
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs text-muted">
-                                    {(Number(item.weightInGrams) / 1000).toFixed(1)}kg
+                                    {(Number(item.weightInGrams) / 1000).toFixed(1)} kg
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs">
-                                    {fmt(Number(item.cargoPriceInThb))}
+                                    {fmt(Number(item.cargoPriceInThb))} THB
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs">
-                                    {fmt(Number(item.cargoPriceInMmk))}
+                                    {fmt(Number(item.cargoPriceInMmk))} MMK
                                 </td>
                                 <td className="py-3 px-3 text-right font-mono text-xs">
-                                    {fmt(Number(item.sellingPriceInMmk))}
+                                    {fmt(Number(item.sellingPriceInMmk))} MMK
                                 </td>
                                 <td
                                     className={`py-3 px-3 text-right font-mono text-xs font-semibold ${
                                         profit < 0 ? "text-alert-red" : "text-ok-green"
                                     }`}
                                 >
-                                    {fmt(profit)}
+                                    {fmt(profit)} MMK
                                 </td>
                                 <td className="py-3 px-3 text-center font-mono text-xs text-muted whitespace-nowrap">
                                     {item.stockIn} / {item.stockOut}
@@ -194,6 +237,19 @@ const ItemTable = ({ items, exchangeRate, sorting, onSort, onEdit }: Props) => {
                     })}
                 </tbody>
             </table>
+
+            {preview && (
+                <div
+                    className="fixed z-50 pointer-events-none"
+                    style={{ left: preview.x, top: preview.y }}
+                >
+                    <ProtectedImage
+                        src={preview.src}
+                        alt="Preview"
+                        className="w-64 h-64 object-cover rounded-md border border-paper-line shadow-xl bg-white"
+                    />
+                </div>
+            )}
         </div>
     );
 };

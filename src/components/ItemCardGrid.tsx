@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { getComputed } from "@/lib/computed";
 import { fmt } from "@/lib/format";
-import Avatar from "./Avatar";
 import StatusStamp from "./StatusStamp";
 import { Pencil, Trash2 } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { deleteItem } from "@/store/features/items/itemsThunk";
+import ProtectedImage from "./ui/ProtectedImage";
 
 interface Props {
     items: Item[];
@@ -12,32 +13,77 @@ interface Props {
     onEdit: (item: Item) => void;
 }
 
+interface PreviewState {
+    src: string;
+    x: number;
+    y: number;
+}
+
+const PREVIEW_SIZE = 256;
+const PREVIEW_OFFSET = 20;
+
 const ItemCardGrid = ({ items, exchangeRate, onEdit }: Props) => {
     const dispatch = useAppDispatch();
+    const [preview, setPreview] = useState<PreviewState | null>(null);
+
     const handleDelete = (id: number) => {
         if (confirm("Are you sure you want to delete this item?")) {
             dispatch(deleteItem(id));
         }
     };
 
+    const clampPosition = (clientX: number, clientY: number) => {
+        const maxX = window.innerWidth - PREVIEW_SIZE - PREVIEW_OFFSET;
+        const maxY = window.innerHeight - PREVIEW_SIZE - PREVIEW_OFFSET;
+        return {
+            x: Math.min(clientX + PREVIEW_OFFSET, maxX),
+            y: Math.min(clientY + PREVIEW_OFFSET, maxY)
+        };
+    };
+
+    const showPreview = (e: React.MouseEvent, src: string) => {
+        const { x, y } = clampPosition(e.clientX, e.clientY);
+        setPreview({ src, x, y });
+    };
+
+    const movePreview = (e: React.MouseEvent) => {
+        setPreview((prev) => {
+            if (!prev) return prev;
+            const { x, y } = clampPosition(e.clientX, e.clientY);
+            return { ...prev, x, y };
+        });
+    };
+
+    const hidePreview = () => setPreview(null);
+
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map((item) => {
                 const { profit, stockCount, isInStock, isLow } = getComputed(item, exchangeRate);
+                const imageSrc = item?.image?.url || "/assets/images/placeholder.png";
                 return (
                     <div key={item.id} className="parcel-card p-4 pt-5">
                         <div className="flex items-start justify-between mb-3">
                             <div className="flex items-center gap-3">
-                                <Avatar name={item.name} color={item.category.color ?? "#8A93A0"} />
+                                <ProtectedImage
+                                    src={imageSrc}
+                                    alt={item.name}
+                                    className="w-10 h-10 object-cover rounded-xs cursor-zoom-in shrink-0"
+                                    onMouseEnter={(e: React.MouseEvent<HTMLImageElement>) =>
+                                        showPreview(e, imageSrc)
+                                    }
+                                    onMouseMove={movePreview}
+                                    onMouseLeave={hidePreview}
+                                />
                                 <div>
                                     <p className="font-display font-semibold text-sm leading-tight">
                                         {item.name}
                                     </p>
                                     <p
                                         className="text-xs font-medium mt-0.5"
-                                        style={{ color: item.category.color ?? undefined }}
+                                        style={{ color: item?.category?.color ?? undefined }}
                                     >
-                                        {item.category.name}
+                                        {item?.category?.name ?? "N/A"}
                                     </p>
                                 </div>
                             </div>
@@ -147,6 +193,19 @@ const ItemCardGrid = ({ items, exchangeRate, onEdit }: Props) => {
                     </div>
                 );
             })}
+
+            {preview && (
+                <div
+                    className="fixed z-50 pointer-events-none"
+                    style={{ left: preview.x, top: preview.y }}
+                >
+                    <ProtectedImage
+                        src={preview.src}
+                        alt="Preview"
+                        className="w-64 h-64 object-cover rounded-md border border-paper-line shadow-xl bg-white"
+                    />
+                </div>
+            )}
         </div>
     );
 };

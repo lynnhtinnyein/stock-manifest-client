@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { itemsApi } from "./itemsApi";
 import { extractErrorMessage } from "@/utils/extractErrorMessage";
+import { invalidateImageUrl } from "@/utils/protectedImageCache";
+import type { RootState } from "@/store";
 
 export const fetchItems = createAsyncThunk<
     PaginatedResponse<Item>,
@@ -28,10 +30,15 @@ export const createItem = createAsyncThunk<Item, CreateItemPayload, { rejectValu
 export const updateItem = createAsyncThunk<
     Item,
     { id: number; payload: UpdateItemPayload },
-    { rejectValue: string }
->("items/update", async ({ id, payload }, { rejectWithValue }) => {
+    { rejectValue: string; state: RootState }
+>("items/update", async ({ id, payload }, { getState, rejectWithValue }) => {
     try {
-        return await itemsApi.update(id, payload);
+        const previousImageUrl = getState().items.items.find((item) => item.id === id)?.image?.url;
+        const updatedItem = await itemsApi.update(id, payload);
+        if (previousImageUrl && previousImageUrl !== updatedItem.image?.url) {
+            invalidateImageUrl(previousImageUrl);
+        }
+        return updatedItem;
     } catch (error) {
         return rejectWithValue(extractErrorMessage(error));
     }
@@ -51,10 +58,15 @@ export const deleteItem = createAsyncThunk<void, number, { rejectValue: string }
 export const syncImage = createAsyncThunk<
     Item,
     { id: number; payload: FormData },
-    { rejectValue: string }
->("items/syncImage", async ({ id, payload }, { rejectWithValue }) => {
+    { rejectValue: string; state: RootState }
+>("items/syncImage", async ({ id, payload }, { getState, rejectWithValue }) => {
     try {
-        return await itemsApi.syncImage(id, payload);
+        const previousImageUrl = getState().items.items.find((item) => item.id === id)?.image?.url;
+        const updatedItem = await itemsApi.syncImage(id, payload);
+        if (previousImageUrl && previousImageUrl !== updatedItem.image?.url) {
+            invalidateImageUrl(previousImageUrl);
+        }
+        return updatedItem;
     } catch (error) {
         return rejectWithValue(extractErrorMessage(error));
     }

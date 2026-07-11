@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchCategories } from "./categoriesThunk";
+import { createCategory, deleteCategory, fetchCategories } from "./categoriesThunk";
 
 const initialState: FlatState<Category> = {
     items: [],
@@ -26,6 +26,17 @@ const categoriesSlice = createSlice({
             .addCase(fetchCategories.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload || "Failed to fetch categories";
+            })
+
+            .addCase(createCategory.fulfilled, (state, action) => {
+                state.items.push(action.payload);
+                state.loading = false;
+                state.error = null;
+            })
+            .addCase(deleteCategory.fulfilled, (state, action) => {
+                state.items = state.items.filter((category) => category.id !== action.meta.arg);
+                state.loading = false;
+                state.error = null;
             });
     }
 });

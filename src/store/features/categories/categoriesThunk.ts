@@ -12,3 +12,25 @@ export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue:
         }
     }
 );
+
+export const createCategory = createAsyncThunk<Category, { name: string; color: string }, { rejectValue: string }>(
+    "categories/create",
+    async ({ name, color }, { rejectWithValue }) => {
+        try {
+            return await categoriesApi.create(name, color);
+        } catch (error) {
+            return rejectWithValue(extractErrorMessage(error));
+        }
+    }
+);
+
+export const deleteCategory = createAsyncThunk<void, number, { rejectValue: string }>(
+    "categories/delete",
+    async (id, { rejectWithValue }) => {
+        try {
+            await categoriesApi.delete(id);
+        } catch (error) {
+            return rejectWithValue(extractErrorMessage(error));
+        }
+    }
+);

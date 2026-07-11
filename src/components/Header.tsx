@@ -14,13 +14,13 @@ const Header = ({ onAdd }: Props) => {
                 <div className="flex items-center justify-between gap-4 flex-wrap">
                     <div>
                         <p className="font-mono text-[11px] tracking-[0.2em] text-muted uppercase mb-1">
-                            ONLINE SALES · BANGKOK DEPOT
+                            STOCK MANIFEST
                         </p>
                         <h1 className="font-display text-2xl sm:text-3xl font-bold tracking-tight">
                             <span className="brand-mark">I want it, I got it</span>
                         </h1>
                         <p className="font-mono text-[10px] tracking-[0.18em] text-muted uppercase mt-1.5">
-                            STOCK MANIFEST
+                            ONLINE SALE · BANGKOK DEPOT
                         </p>
                     </div>
                     <div className="flex items-center gap-3">
