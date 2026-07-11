@@ -158,3 +158,9 @@
 button {
     cursor: pointer;
 }
+
+@media (max-width: 640px) {
+    input, select, textarea {
+        font-size: 16px !important;
+    }
+}
