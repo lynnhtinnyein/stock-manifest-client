@@ -17,8 +17,8 @@ const LoginPage = () => {
     const { loading, error } = useAppSelector((state) => state.auth);
 
     const [formData, setFormData] = useState<LoginFormData>({
-        username: "superadmin",
-        password: "Password@123",
+        username: "",
+        password: "",
         remember: false
     });
 
