@@ -8,6 +8,7 @@ import { addToast } from "@/lib/Toaster";
 import { getComputed } from "@/lib/computed";
 import { getOneToOneAttachmentsPayload, parseToLocalAttachment } from "@/lib/attachement";
 import { ALLOWED_IMAGE_TYPES } from "@/configs/attachments";
+import { compressImage } from "@/lib/compressImage";
 import { generateId } from "@/utils/generateId";
 import CategorySelect from "./CategorySelect";
 import useDimensions from "@/hooks/useDimensions";
@@ -118,7 +119,7 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
         setFormData((prev) => ({ ...prev, categoryId }));
     };
 
-    const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
 
         if (!file || !validateFile(file)) {
@@ -126,15 +127,17 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
             return;
         }
 
+        const compressedFile = await compressImage(file);
+
         setFormData((prev) => ({
             ...prev,
             image: {
                 id: generateId(),
-                file,
-                name: file.name,
+                file: compressedFile,
+                name: compressedFile.name,
                 originalName: file.name,
-                size: file.size,
-                mimeType: file.type,
+                size: compressedFile.size,
+                mimeType: compressedFile.type,
                 isExisting: false
             }
         }));
