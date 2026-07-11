@@ -240,7 +240,7 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-5 space-y-4">
+                <form onSubmit={handleSubmit} className="pt-5 px-5 pb-20 space-y-4">
                     <div className="flex flex-col space-y-1.5">
                         <span className="font-mono text-[10px] tracking-[0.15em] text-muted uppercase">
                             Image
