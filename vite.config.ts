@@ -14,8 +14,8 @@ export default defineConfig({
             registerType: "autoUpdate",
             includeAssets: ["favicon.svg"],
             manifest: {
-                name: "Stock Manifest",
-                short_name: "StockManifest",
+                name: "I want it, I got it",
+                short_name: "I want it, I got it",
                 description: "Online sale inventory management for Bangkok depot",
                 theme_color: "#1b2430",
                 background_color: "#f5f5f1",

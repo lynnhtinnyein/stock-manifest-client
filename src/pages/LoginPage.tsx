@@ -1,8 +1,8 @@
 import { useMemo, useState, type ChangeEvent, type SubmitEvent } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { login } from "@/store/features/auth/authThunk";
-import PasswordVisibilityToggle from "@/components/ui/PasswordVisibilityToggle";
 import { APP_VERSION } from "@/configs/env";
+import PasswordVisibilityToggle from "@/components/ui/PasswordVisibilityToggle";
 
 // Manifest palette — matches the stock-manifest dashboard's design tokens.
 const ink = "#1B2430";
@@ -41,7 +41,7 @@ const LoginPage = () => {
         const { name, value } = e.target;
         setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: name === "username" ? value.toLowerCase() : value
         }));
     };
 
