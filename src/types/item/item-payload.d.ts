@@ -1,5 +1,5 @@
 type ItemListFilters = {
-    name?: string;
+    search?: string;
     categoryId?: number | null;
 };
 

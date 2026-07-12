@@ -55,11 +55,11 @@ const RateControl = ({ exchangeRate }: RateControlProps) => {
     };
 
     return (
-        <div className="rate-box flex items-center gap-2.5 bg-white border border-paper-line rounded-xs px-3.5 py-2.5 mb-5 w-fit">
+        <div className="rate-box flex items-center gap-2.5 bg-white border border-paper-line rounded-xs px-3.5 py-2.5 w-fit">
             <span className="font-mono text-[10px] tracking-[0.12em] text-muted uppercase">
                 Today&apos;s Rate
             </span>
-            <span className="font-mono text-xs text-muted">฿1 =</span>
+            <span className="font-mono text-xs text-muted whitespace-nowrap">฿1 =</span>
             <input
                 type="text"
                 inputMode="decimal"
@@ -78,13 +78,6 @@ const RateControl = ({ exchangeRate }: RateControlProps) => {
             >
                 {submitting ? "..." : "Change"}
             </button>
-            <span
-                className={`font-mono text-[10px] tracking-[0.1em] uppercase text-ok-green transition-opacity duration-300 ${
-                    confirmed ? "opacity-100" : "opacity-0"
-                }`}
-            >
-                Applied
-            </span>
         </div>
     );
 };
