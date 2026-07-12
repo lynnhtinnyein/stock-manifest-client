@@ -1,7 +1,8 @@
-import { type ChangeEvent, memo, useMemo } from "react";
+import { type ChangeEvent, type KeyboardEvent, type ReactNode, memo, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 export type InputChangeEvent = ChangeEvent<HTMLInputElement | HTMLTextAreaElement>;
+export type InputKeyEvent = KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>;
 
 const ID_SEPARATOR = "___";
 
@@ -19,6 +20,9 @@ interface InputProps {
     max?: number;
     maxLength?: number;
     isDisabled?: boolean;
+    startContent?: ReactNode;
+    endContent?: ReactNode;
+    onEnter?: (event: InputKeyEvent) => void;
 }
 
 const fieldClass = (isInvalid?: boolean, isDisabled?: boolean) =>
@@ -45,7 +49,10 @@ export const Input = ({
     min,
     max,
     maxLength = 500,
-    isDisabled
+    isDisabled,
+    startContent,
+    endContent,
+    onEnter
 }: InputProps) => {
     const [uuid] = useMemo(() => [uuidv4()], []);
     const prefixedId = id ? `${uuid}${ID_SEPARATOR}${id}` : name;
@@ -73,6 +80,12 @@ export const Input = ({
         onChange({ ...e, target: { ...e.target, name, value: raw } } as InputChangeEvent);
     };
 
+    const handleKeyUp = (e: InputKeyEvent) => {
+        if (e.key === "Enter") {
+            onEnter?.(e);
+        }
+    };
+
     return (
         <div className="flex w-full flex-col space-y-1">
             {label && (
@@ -90,6 +103,7 @@ export const Input = ({
                     name={name}
                     value={value}
                     onChange={onChange}
+                    onKeyUp={onEnter ? handleKeyUp : undefined}
                     placeholder={placeholder}
                     disabled={isDisabled}
                     rows={3}
@@ -97,19 +111,36 @@ export const Input = ({
                     className={`${fieldClass(isInvalid, isDisabled)} resize-none`}
                 />
             ) : (
-                <input
-                    id={prefixedId}
-                    name={name}
-                    type="text"
-                    inputMode={
-                        type === "number" ? "numeric" : type === "decimal" ? "decimal" : undefined
-                    }
-                    value={value}
-                    onChange={isNumeric ? handleNumericChange : onChange}
-                    placeholder={placeholder}
-                    disabled={isDisabled}
-                    className={`disabled:bg-paper disabled:text-muted ${fieldClass(isInvalid, isDisabled)}${isNumeric ? " font-mono" : ""}`}
-                />
+                <div className="relative w-full">
+                    {startContent && (
+                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 flex items-center">
+                            {startContent}
+                        </span>
+                    )}
+                    <input
+                        id={prefixedId}
+                        name={name}
+                        type="text"
+                        inputMode={
+                            type === "number"
+                                ? "numeric"
+                                : type === "decimal"
+                                  ? "decimal"
+                                  : undefined
+                        }
+                        value={value}
+                        onChange={isNumeric ? handleNumericChange : onChange}
+                        onKeyUp={onEnter ? handleKeyUp : undefined}
+                        placeholder={placeholder}
+                        disabled={isDisabled}
+                        className={`disabled:bg-paper disabled:text-muted ${fieldClass(isInvalid, isDisabled)}${isNumeric ? " font-mono" : ""}${startContent ? " pl-8" : ""}${endContent ? " pr-8" : ""}`}
+                    />
+                    {endContent && (
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+                            {endContent}
+                        </span>
+                    )}
+                </div>
             )}
 
             {isTextarea && (
