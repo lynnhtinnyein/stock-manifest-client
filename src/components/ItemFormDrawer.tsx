@@ -127,20 +127,24 @@ const ItemFormDrawer = ({ show, onClose, item, exchangeRate }: Props) => {
             return;
         }
 
-        const compressedFile = await compressImage(file);
+        try {
+            const compressedFile = await compressImage(file);
 
-        setFormData((prev) => ({
-            ...prev,
-            image: {
-                id: generateId(),
-                file: compressedFile,
-                name: compressedFile.name,
-                originalName: file.name,
-                size: compressedFile.size,
-                mimeType: compressedFile.type,
-                isExisting: false
-            }
-        }));
+            setFormData((prev) => ({
+                ...prev,
+                image: {
+                    id: generateId(),
+                    file: compressedFile,
+                    name: compressedFile.name,
+                    originalName: file.name,
+                    size: compressedFile.size,
+                    mimeType: compressedFile.type,
+                    isExisting: false
+                }
+            }));
+        } catch {
+            addToast({ message: "Failed to process image", status: "error" });
+        }
 
         e.target.value = "";
     };
